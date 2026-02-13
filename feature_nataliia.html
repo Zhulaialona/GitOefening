@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Focus Flow Demo</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Consolas, monospace;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+
+    header {
+      padding: 12px 20px;
+      background: #252526;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #333;
+    }
+
+    button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    button:hover {
+      background: #1177bb;
+    }
+
+    .container {
+      display: flex;
+      gap: 16px;
+      padding: 16px;
+    }
+
+    .file {
+      flex: 1;
+      background: #252526;
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: opacity 0.3s, transform 0.2s;
+    }
+
+    .file:hover {
+      transform: translateY(-2px);
+    }
+
+    .file.focused {
+      outline: 2px solid #0e639c;
+      opacity: 1 !important;
+    }
+
+    .file.dimmed {
+      opacity: 0.35;
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>🧠 Focus Flow – HTML Demo</div>
+  <button id="toggleBtn">Enable Focus Mode</button>
+</header>
+
+<div class="container">
+  <div class="file">
+<pre>// app.js
+function login(user) {
+  if (!user) return;
+  authenticate(user);
+}</pre>
+  </div>
+
+  <div class="file">
+<pre>// api.js
+export async function fetchData() {
+  const res = await fetch("/api");
+  return res.json();
+}</pre>
+  </div>
+
+  <div class="file">
+<pre>// utils.js
+export function formatDate(date) {
+  return new Date(date).toLocaleDateString();
+}</pre>
+  </div>
+</div>
+
+<script>
+  let focusEnabled = false;
+  let focusedElement = null;
+
+  const toggleBtn = document.getElementById("toggleBtn");
+  const files = document.querySelectorAll(".file");
+
+  toggleBtn.addEventListener("click", () => {
+    focusEnabled = !focusEnabled;
+    toggleBtn.textContent = focusEnabled
+      ? "Disable Focus Mode"
+      : "Enable Focus Mode";
+
+    clearFocus();
+  });
+
+  files.forEach(file => {
+    file.addEventListener("click", () => {
+      if (!focusEnabled) return;
+      applyFocus(file);
+    });
+  });
+
+  function applyFocus(target) {
+    focusedElement = target;
+    files.forEach(file => {
+      file.classList.remove("focused", "dimmed");
+      if (file === target) {
+        file.classList.add("focused");
+      } else {
+        file.classList.add("dimmed");
+      }
+    });
+  }
+
+  function clearFocus() {
+    focusedElement = null;
+    files.forEach(file => {
+      file.classList.remove("focused", "dimmed");
+    });
+  }
+</script>
+
+</body>
+</html>
